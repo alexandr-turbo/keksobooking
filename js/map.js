@@ -148,14 +148,15 @@ function createButtons() {
 
  for (var n=0; n<HOUSE_COUNT; n++){
 
-  buttons[n] = document.querySelector('button').cloneNode(true);
-
+  buttons[n] = document.querySelector('button.map__pin--main').cloneNode(true);
   buttons[n].setAttribute('style', 'left: ' + objectsArray[n].location.x + 'px; top:' + objectsArray[n].location.y + 'px;');
+  buttons[n].setAttribute('img', 'img/avatars/user01.png');
  }
-//for (var m=0; m<HOUSE_COUNT; m++) {
-    buttons[n] = document.querySelector('img').cloneNode(true);
-    buttons[n].setAttribute('src', author.avatar + '');
-  //}
+// for (var m=0; m<HOUSE_COUNT; m++) {
+//     //buttons[m] = document.querySelector('img').cloneNode(true);
+//     buttons[m].setAttribute('src', objectsArray[m].author.avatar + '');
+//     console.log(objectsArray[m].author.avatar);
+//   }
 
   console.log(buttons);
 
