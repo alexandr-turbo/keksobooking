@@ -3,41 +3,16 @@
 var HOUSE_COUNT = 8;
 var author = [];
 var offer = [];
-
+var objectsArray = [];
+var buttons = [];
 var avatars = ['img/avatars/user01.png', 'img/avatars/user02.png', 'img/avatars/user03.png', 'img/avatars/user04.png', 'img/avatars/user05.png', 'img/avatars/user06.png', 'img/avatars/user07.png', 'img/avatars/user08.png'];
 var titles = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var types = ['palace', 'flat', 'house', 'bungalo'];
 var checkins = ['12:00', '13:00', '14:00'];
 var checkouts = ['12:00', '13:00', '14:00'];
 var features = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var descriptions = ['\n'];
+var descriptions = [];
 var photosContainer = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-
-var b, c;
-function randomValue(arr) {
-
-  if (arr == avatars) {
-    b = Math.floor(Math.random() * arr.length);
-    return arr[b];
-  } else if (arr == titles) {
-    c = Math.floor(Math.random() * arr.length);
-    return arr[c];
-  } else {
-    return arr[Math.floor(Math.random() * arr.length)]
-  }
-}
-
-// var a;
-// function randomValue(arr) {
-//   a = Math.floor(Math.random() * arr.length);
-//   console.log(a);
-//   return arr[a];
-// }
-
-// function randomIndex(arr, a) {
-//   //console.log(arr.indexOf(a));
-//   return arr.indexOf(a);
-// }
 
 function randomInteger(min, max) {
   var rand = min + Math.random() * (max + 1 - min);
@@ -66,27 +41,33 @@ function randomFeatures(arr){
   return arr2;
 }
 
-var objectsArray = [];
+function randomValue(arr) {
+  var a;
+    a = Math.floor(Math.random() * arr.length);
+    return arr[a];
+}
+
+function randomIndex(arr, a) {
+  return arr.indexOf(a);
+}
 
 function createHouses() {
   for (var j = 0; j < HOUSE_COUNT; j++) {
-    //var avatarRandomValue = randomValue(avatars);
-    //var avatarRandomValueIndex = avatars.indexOf(avatarRandomValue);
-    //var titleRandomValue = randomValue(titles);
-    //var titleRandomValueIndex = titles.indexOf(titleRandomValue);
+    var avatarRandomValue = randomValue(avatars);
+    var avatarRandomValueIndex = avatars.indexOf(avatarRandomValue);
+    var titleRandomValue = randomValue(titles);
+    var titleRandomValueIndex = titles.indexOf(titleRandomValue);
     var randomX = randomInteger(300, 900);
     var randomY = randomInteger(150, 500);
 
     objectsArray[j] = {
       author:
       {
-        //avatar: avatarRandomValue
-        avatar: randomValue(avatars)
+        avatar: avatarRandomValue
       },
       offer:
       {
-        //title: titleRandomValue,
-        title: randomValue(titles),
+        title: titleRandomValue,
         address: randomX + ', ' + randomY,
         price: randomInteger(1000, 1000000),
         type: randomValue(types),
@@ -95,7 +76,7 @@ function createHouses() {
         checkin: randomValue(checkins),
         checkout: randomValue(checkouts),
         features: randomFeatures(shuffle(features)),
-        description: '\n',
+        description: descriptions,
         photos: shuffle(photosContainer)
       },
       location:
@@ -104,11 +85,8 @@ function createHouses() {
         y: randomY
       }
     }
-    // avatars.splice(randomIndex(avatars), 1);
-    // titles.splice(randomIndex(titles), 1);
-    avatars.splice(b, 1);
-    titles.splice(c, 1);
-    // console.log(objectsArray[j].author.avatar, objectsArray[j].offer.title, objectsArray[j].offer.address, objectsArray[j].offer.price, objectsArray[j].offer.type, objectsArray[j].offer.rooms, objectsArray[j].offer.guests, objectsArray[j].offer.checkin, objectsArray[j].offer.checkout, objectsArray[j].offer.features, objectsArray[j].offer.photos)
+    avatars.splice(avatarRandomValueIndex, 1);
+    titles.splice(titleRandomValueIndex, 1);
   }
 return objectsArray;
 }
@@ -117,78 +95,66 @@ function makeElementVisible(cssClass) {
   document.querySelector(cssClass).classList.remove('map--faded');
 }
 
-//createHouses();
-console.log(createHouses());
+createHouses();
 makeElementVisible('.map');
-//console.log(objectsArray[0].author.avatar);
 
-// console.log(document.querySelector('button'));
-
-// var div2 = document.querySelector('button').cloneNode(true);
-// //div2.cloneNode(true);
-// // document.querySelector('img');
-// div2.setAttribute('style', 'backgroundColor: brown');
-// console.log(div2);
-
-// var div3 = document.querySelector('button').cloneNode(true);
-// //div2.cloneNode(true);
-// // document.querySelector('img');
-// div3.setAttribute('style', 'backgroundColor: orange');
-// console.log(div3);
-// console.log(objectsArray[0].location.x)
-
-
-
-
-
-
-var buttons = [];
 function createButtons() {
-
-
- for (var n=0; n<HOUSE_COUNT; n++){
-
-  buttons[n] = document.querySelector('button.map__pin--main').cloneNode(true);
-  buttons[n].setAttribute('style', 'left: ' + objectsArray[n].location.x + 'px; top:' + objectsArray[n].location.y + 'px;');
-  buttons[n].setAttribute('img', 'img/avatars/user01.png');
+  for (var n=0; n<HOUSE_COUNT; n++){
+    buttons[n] = document.querySelector('button.map__pin--main').cloneNode(true);
+    var width = buttons[n].querySelector('img').getAttribute('width');
+    var height = buttons[n].querySelector('img').getAttribute('height');
+    buttons[n].setAttribute('style', 'left: ' + (objectsArray[n].location.x - width/2) + 'px; top:' + (objectsArray[n].location.y - height) + 'px;');
+    buttons[n].querySelector('img').setAttribute('src', objectsArray[n].author.avatar);
  }
-// for (var m=0; m<HOUSE_COUNT; m++) {
-//     //buttons[m] = document.querySelector('img').cloneNode(true);
-//     buttons[m].setAttribute('src', objectsArray[m].author.avatar + '');
-//     console.log(objectsArray[m].author.avatar);
-//   }
+}
+createButtons();
 
-  console.log(buttons);
+var fragment = document.createDocumentFragment();
+function buttonInsert(arr) {
+  for (var i = 0; i < HOUSE_COUNT; i++) {
+    fragment.appendChild(arr[i]);
+  }
+}
+buttonInsert(buttons);
+var similarButton = document.querySelector('.map__pins');
+similarButton.appendChild(fragment);
 
-  // }
-  //return buttons;
-  // buttons[0] = document.querySelector('img').cloneNode(true);
-  // buttons[0].setAttribute('src', 'img/avatars/user01.png')
+for (var a = 0; a < objectsArray.length; a++) {
+  var similarHouseTemplate = document.querySelector('template').content.querySelector('article.map__card').cloneNode(true);
+
+similarHouseTemplate.querySelector('h3').textContent = objectsArray[a].offer.title;
+
+similarHouseTemplate.querySelector('p.popup__price').textContent = objectsArray[a].offer.price + '$' + '/ночь.';
+
+similarHouseTemplate.querySelector('p').querySelector('small').textContent = objectsArray[a].offer.address;
+
+if (objectsArray[a].offer.type == 'flat') {
+  similarHouseTemplate.querySelector('h4').textContent = 'Квартира';
+} else if (objectsArray[a].offer.type == 'bungalo') {
+  similarHouseTemplate.querySelector('h4').textContent = 'Бунгало';
+} else if (objectsArray[a].offer.type == 'house') {
+  similarHouseTemplate.querySelector('h4').textContent = 'Дом';
+} else if (objectsArray[a].offer.type == 'palace') {
+  similarHouseTemplate.querySelector('h4').textContent = 'Дворец';
 }
 
-  createButtons();
+similarHouseTemplate.querySelectorAll('p')[2].textContent = objectsArray[a].offer.rooms + ' комнаты для ' + objectsArray[0].offer.guests + ' гостей';
 
-  // var div2 = document.querySelector('buttons[0]').cloneNode(true);
-  // buttons[0].setAttribute('style', 'left: ' + objectsArray[0].location.x + ' px; top: ' + objectsArray[0].y + ' px;');
-  // buttons[1].setAttribute('style', 'backgroundColor: brown');
+similarHouseTemplate.querySelectorAll('p')[3].textContent = 'Заезд после ' + objectsArray[a].offer.checkin + ', выезд до ' + objectsArray[0].offer.checkout;
 
-  // style="left: {{location.x}}px; top: {{location.y}}px;"
-  // <img src="{{author.avatar}}" width="40" height="40" draggable="false">
-  // var renderWizard = function (wizard) {
-  //   var wizardElement = similarWizardTemplate.cloneNode(true);
-  //   wizardElement.querySelector('.setup-similar-label').textContent = wizard.name + ' ' + wizard.surname;
-  //   wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
-  //   wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
-  //   return wizardElement;
-  // };
+for (var i = 0; i<objectsArray[a].offer.features.length; i++) {
+  similarHouseTemplate.querySelector('ul.popup__features').querySelector('li.feature').parentNode.removeChild(similarHouseTemplate.querySelector('li.feature'));
+}
 
+  similarHouseTemplate.querySelector('ul.popup__pictures').querySelector('img').setAttribute('src', objectsArray[a].offer.photos[0]);
+  similarHouseTemplate.querySelector('ul.popup__pictures').querySelector('img').setAttribute('width', '70');
+for (var i = 1; i<objectsArray[a].offer.photos.length; i++) {
+  var newImage = similarHouseTemplate.querySelector('ul.popup__pictures').querySelector('img').cloneNode(true);
+  newImage.setAttribute('src', objectsArray[a].offer.photos[i]);
+  similarHouseTemplate.querySelector('ul.popup__pictures').querySelector('li').appendChild(newImage);
+}
 
-  // var fragment = document.createDocumentFragment();
-  // function buttonInsert(arr) {
-  //   for (var i = 0; i < HOUSE_COUNT; i++) {
-  //     fragment.appendChild(arr[i]);
-  //   }
-  // }
-  // buttonInsert(buttons);
-  // var similarButton = document.querySelector('.map__pins');
-  // similarButton.appendChild(fragment);
+similarHouseTemplate.querySelector('img.popup__avatar').setAttribute('src', objectsArray[a].author.avatar);
+}
+var insertMarker = document.querySelector('.map__filters-container');
+document.querySelector('.map').insertBefore(similarHouseTemplate, insertMarker);
