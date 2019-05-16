@@ -1,9 +1,10 @@
 'use strict'
 
 var HOUSE_COUNT = 8;
-var similarHouseTemplate;
-var adsArray = [];
+var advertsArray = [];
 var buttons = [];
+var fragment = document.createDocumentFragment();
+var advertPinsStorage = document.querySelector('.map__pins');
 var avatars = ['img/avatars/user01.png', 'img/avatars/user02.png', 'img/avatars/user03.png', 'img/avatars/user04.png', 'img/avatars/user05.png', 'img/avatars/user06.png', 'img/avatars/user07.png', 'img/avatars/user08.png'];
 var titles = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var types = ['palace', 'flat', 'house', 'bungalo'];
@@ -19,7 +20,7 @@ var photosContainer = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'ht
  * @param {number} max Максимальное значение
  * @return {number} Случайное число в диапазоне от min до max
  */
-function randomInteger(min, max) {
+function getRandomInteger(min, max) {
   return Math.floor(min + Math.random() * (max + 1 - min));
 }
 
@@ -42,11 +43,11 @@ function shuffleArray(arr){
 }
 
 /**
- * Функция, создающая массив и наполняющая его слычайными значениями из другого массива
+ * Функция, создающая массив случайной длины и наполняющая его случайными значениями из другого массива
  * @param {array} arr Массив
  * @return {array} Массив, наполненный случайными значениями из другого массива
  */
-function randomArrays(arr){
+function getRandomArray(arr){
   var randomizedArray = [];
   for (var m = 0; m < arr.length; m++){
     if (Math.random() >= 0.5){
@@ -55,36 +56,40 @@ function randomArrays(arr){
   }
   return randomizedArray;
 }
+
 /**
  * Функция, возвращающая случайное значение из массива
  * @param {array} arr Массив
  * @return {value} Случайное значение
  */
-function randomArrayValue(arr) {
+function getRandomArrayValue(arr) {
   var randomizedValue = Math.floor(Math.random() * arr.length);
   return arr[randomizedValue];
 }
 
 /**
- * Функция, возвращающая индекс значения
+ * Функция, возвращающая индекс элемента randomizedValue в массиве arr
  * @param {array} arr Массив
  * @param {number} randomizedValue Число
- * @return {number} Индекс числа из массива
+ * @return {number} Индекс числа в массиве arr
  */
 function getIndex(arr, randomizedValue) {
   return arr.indexOf(randomizedValue);
 }
 
+/**
+ * Функция создания домов
+ */
 function createHouses() {
   for (var j = 0; j < HOUSE_COUNT; j++) {
-    var avatarRandomValue = randomArrayValue(avatars);
+    var avatarRandomValue = getRandomArrayValue(avatars);
     var avatarRandomValueIndex = getIndex(avatars, avatarRandomValue);
-    var titleRandomValue = randomArrayValue(titles);
+    var titleRandomValue = getRandomArrayValue(titles);
     var titleRandomValueIndex = getIndex(titles, titleRandomValue);
-    var randomX = randomInteger(300, 900);
-    var randomY = randomInteger(150, 500);
+    var randomX = getRandomInteger(300, 900);
+    var randomY = getRandomInteger(150, 500);
 
-    adsArray[j] = {
+    advertsArray[j] = {
       author:
       {
         avatar: avatarRandomValue
@@ -93,13 +98,13 @@ function createHouses() {
       {
         title: titleRandomValue,
         address: randomX + ', ' + randomY,
-        price: randomInteger(1000, 1000000),
-        type: randomArrayValue(types),
-        rooms: randomInteger(1, 5),
-        guests: randomInteger(1, 10),
-        checkin: randomArrayValue(checkins),
-        checkout: randomArrayValue(checkouts),
-        features: randomArrays(shuffleArray(features)),
+        price: getRandomInteger(1000, 1000000),
+        type: getRandomArrayValue(types),
+        rooms: getRandomInteger(1, 5),
+        guests: getRandomInteger(1, 10),
+        checkin: getRandomArrayValue(checkins),
+        checkout: getRandomArrayValue(checkouts),
+        features: getRandomArray(shuffleArray(features)),
         description: descriptions,
         photos: shuffleArray(photosContainer)
       },
@@ -125,22 +130,22 @@ function makeElementVisible(selectorClass, removeClass) {
 
 createHouses();
 makeElementVisible('.map', 'map--faded');
+
 /**
- * Функция, создающая метки и добавляющая фотографию каждой метке
+ * Функция, создающая метки и добавляющая изображение каждой метке
  */
 function createButtons() {
   for (var n=0; n<HOUSE_COUNT; n++){
     buttons[n] = document.querySelector('template').content.querySelector('button.map__pin').cloneNode(true);
     var width = buttons[n].querySelector('img').getAttribute('width');
     var height = buttons[n].querySelector('img').getAttribute('height');
-    buttons[n].setAttribute('style', 'left: ' + (adsArray[n].location.x - width/2) + 'px; top:' + (adsArray[n].location.y - height) + 'px;');
-    buttons[n].querySelector('img').setAttribute('src', adsArray[n].author.avatar);
+    buttons[n].setAttribute('style', 'left: ' + (advertsArray[n].location.x - width/2) + 'px; top:' + (advertsArray[n].location.y - height) + 'px;');
+    buttons[n].querySelector('img').setAttribute('src', advertsArray[n].author.avatar);
  }
 }
 
 createButtons();
 
-var fragment = document.createDocumentFragment();
 /**
  * Функция вставки меток на карту
  * @param {array} arr Массив
@@ -150,66 +155,60 @@ function buttonsInsert(arr) {
     fragment.appendChild(arr[i]);
   }
 }
+
 buttonsInsert(buttons);
-var similarButton = document.querySelector('.map__pins');
-similarButton.appendChild(fragment);
+
+advertPinsStorage.appendChild(fragment);
 
 /**
- * Функция создания объявлений
- * @param {array} arr Массив
+ * Функция наполнения карточки объявления
+ * @param {object} advertCard Элемент массива
+ * @return {object} Наполненная карточка объявления
  */
-function adsFilling (arr) {
-  for (var a = 0; a < 1; a++) {
-    adFilling(arr, a);
-}
-}
+function fillAdvert (advertCard) {
 
-/**
- * Функция создания объявления
- * @param {array} arr Массив
- * @param {number} a Номер объявления и номер ячеек пар ключ: значение
- */
-function adFilling (arr, a) {
-similarHouseTemplate = document.querySelector('template').content.querySelector('article.map__card').cloneNode(true);
+  var firstAdvert = document.querySelector('template').content.querySelector('article.map__card').cloneNode(true);
 
-  similarHouseTemplate.querySelector('h3').textContent = arr[a].offer.title;
+  firstAdvert.querySelector('h3').textContent = advertCard.offer.title;
 
-  similarHouseTemplate.querySelector('p.popup__price').textContent = arr[a].offer.price + '$' + '/ночь.';
+  firstAdvert.querySelector('p.popup__price').textContent = advertCard.offer.price + '$' + '/ночь.';
 
-  similarHouseTemplate.querySelector('p').querySelector('small').textContent = arr[a].offer.address;
+  firstAdvert.querySelector('p').querySelector('small').textContent = advertCard.offer.address;
 
   var typeOfHouse = '';
-  if (arr[a].offer.type == 'flat') {
+  if (advertCard.offer.type == 'flat') {
     typeOfHouse = 'Квартира';
-  } else if (arr[a].offer.type == 'bungalo') {
+  } else if (advertCard.offer.type == 'bungalo') {
     typeOfHouse = 'Бунгало';
-  } else if (arr[a].offer.type == 'house') {
+  } else if (advertCard.offer.type == 'house') {
     typeOfHouse = 'Дом';
-  } else if (arr[a].offer.type == 'palace') {
+  } else if (advertCard.offer.type == 'palace') {
     typeOfHouse = 'Дворец';
   }
-  similarHouseTemplate.querySelector('h4').textContent = typeOfHouse;
+  firstAdvert.querySelector('h4').textContent = typeOfHouse;
 
-  similarHouseTemplate.querySelectorAll('p')[2].textContent = arr[a].offer.rooms + ' комнаты для ' + arr[a].offer.guests + ' гостей';
+  firstAdvert.querySelectorAll('p')[2].textContent = advertCard.offer.rooms + ' комнаты для ' + advertCard.offer.guests + ' гостей';
 
-  similarHouseTemplate.querySelectorAll('p')[3].textContent = 'Заезд после ' + arr[a].offer.checkin + ', выезд до ' + arr[a].offer.checkout;
+  firstAdvert.querySelectorAll('p')[3].textContent = 'Заезд после ' + advertCard.offer.checkin + ', выезд до ' + advertCard.offer.checkout;
 
-  for (var i = 0; i<arr[a].offer.features.length; i++) {
-    similarHouseTemplate.querySelector('ul.popup__features').querySelector('li.feature').parentNode.removeChild(similarHouseTemplate.querySelector('li.feature'));
+  for (var i = 0; i<advertCard.offer.features.length; i++) {
+    firstAdvert.querySelector('ul.popup__features').querySelector('li.feature').parentNode.removeChild(firstAdvert.querySelector('li.feature'));
   }
 
-    similarHouseTemplate.querySelector('ul.popup__pictures').querySelector('img').setAttribute('src', arr[a].offer.photos[0]);
-    similarHouseTemplate.querySelector('ul.popup__pictures').querySelector('img').setAttribute('width', '70');
-  for (var i = 1; i<arr[a].offer.photos.length; i++) {
-    var newImage = similarHouseTemplate.querySelector('ul.popup__pictures').querySelector('img').cloneNode(true);
-    newImage.setAttribute('src', arr[a].offer.photos[i]);
-    similarHouseTemplate.querySelector('ul.popup__pictures').querySelector('li').appendChild(newImage);
+  firstAdvert.querySelector('ul.popup__pictures').querySelector('img').setAttribute('src', advertCard.offer.photos[0]);
+  firstAdvert.querySelector('ul.popup__pictures').querySelector('img').setAttribute('width', '70');
+  for (var i = 1; i<advertCard.offer.photos.length; i++) {
+    var newImage = firstAdvert.querySelector('ul.popup__pictures').querySelector('img').cloneNode(true);
+    newImage.setAttribute('src', advertCard.offer.photos[i]);
+    firstAdvert.querySelector('ul.popup__pictures').querySelector('li').appendChild(newImage);
   }
 
-  similarHouseTemplate.querySelector('img.popup__avatar').setAttribute('src', arr[a].author.avatar);
+  firstAdvert.querySelector('img.popup__avatar').setAttribute('src', advertCard.author.avatar);
+
+  return firstAdvert;
 }
 
-adsFilling(adsArray);
+var makeFirstAdvert = fillAdvert(advertsArray[0]);
 
 var insertMarker = document.querySelector('.map__filters-container');
-document.querySelector('.map').insertBefore(similarHouseTemplate, insertMarker);
+document.querySelector('.map').insertBefore(makeFirstAdvert, insertMarker);
