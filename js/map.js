@@ -209,4 +209,4 @@ mapPins.appendChild(fragment);
 var filledAdvertCard = fillAdvert(advertsArray[0]);
 
 var mapFiltersContainer = document.querySelector('.map__filters-container');
-document.querySelector('.map').insertBefore(filledAdvertCards, mapFiltersContainer);
+document.querySelector('.map').insertBefore(filledAdvertCard, mapFiltersContainer);
