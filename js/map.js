@@ -206,7 +206,7 @@ buttonsInsert(buttons);
 
 mapPins.appendChild(fragment);
 
-var filledAdvertCards = fillAdvert(advertsArray[0]);
+var filledAdvertCard = fillAdvert(advertsArray[0]);
 
 var mapFiltersContainer = document.querySelector('.map__filters-container');
 document.querySelector('.map').insertBefore(filledAdvertCards, mapFiltersContainer);
