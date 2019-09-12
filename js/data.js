@@ -1,7 +1,5 @@
 'use strict'
 
-var HOUSE_COUNT = 8;
-// var advertsArray = [];
 var buttons = [];
 var fragment = document.createDocumentFragment();
 var mapPins = document.querySelector('.map__pins');
@@ -86,51 +84,6 @@ function getIndex(arr, randomizedValue) {
 }
 
 /**
- * Функция генерации случайного контента для массива объявлений
- */
-// function createHouses() {
-//   var generetedAdvertsArray = [];
-//   for (var j = 0; j < HOUSE_COUNT; j++) {
-//     var avatarRandomValue = getRandomArrayValue(avatars);
-//     var avatarRandomValueIndex = getIndex(avatars, avatarRandomValue);
-//     var titleRandomValue = getRandomArrayValue(titles);
-//     var titleRandomValueIndex = getIndex(titles, titleRandomValue);
-//     var randomX = getRandomInteger(300, 900);
-//     var randomY = getRandomInteger(150, 500);
-
-//     generetedAdvertsArray[j] = {
-//       author:
-//       {
-//         avatar: avatarRandomValue
-//       },
-//       offer:
-//       {
-//         title: titleRandomValue,
-//         address: (randomX) + ', ' + (randomY),
-//         price: getRandomInteger(1000, 1000000),
-//         type: getRandomArrayValue(types),
-//         rooms: getRandomInteger(1, 5),
-//         guests: getRandomInteger(1, 10),
-//         checkin: getRandomArrayValue(checkins),
-//         checkout: getRandomArrayValue(checkouts),
-//         features: getRandomArray(shuffleArray(features)),
-//         description: descriptions,
-//         photos: shuffleArray(photosContainer)
-//       },
-//       location:
-//       {
-//         x: randomX,
-//         y: randomY
-//       }
-//     }
-//     avatars.splice(avatarRandomValueIndex, 1);
-//     titles.splice(titleRandomValueIndex, 1);
-//   }
-//   return generetedAdvertsArray;
-// }
-// var advertsArray = createHouses();
-
-/**
  * Функция, удаляющая класс у блока
  * @param {class} selectorClass Блок
  * @param {class} removeClass Удаляемый класс
@@ -156,7 +109,7 @@ mainPin.addEventListener('mousedown', function(evt) {
   window.map.buttonsInsert(buttons);
   mapPins.appendChild(fragment);
   var advertPin = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-  for (var n = 0; n < Object.keys(downloadedAdverts).length; n++) {
+  for (var n = 0; n < Object.keys(window.backend.downloadedAdverts).length; n++) {
     advertPin[n].addEventListener('click', window.backend.openCard(n), false);
     advertPin[n].addEventListener('click', window.backend.closeCard(n), false); 
   }
@@ -194,7 +147,6 @@ mainPin.addEventListener('mousedown', function(evt) {
       x: moveEvt.clientX,
       y: moveEvt.clientY
     }
-      //console.log(mainPin.offsetLeft + '   ' + mainPin.offsetTop);
   };
   var onMouseUp = function (upEvt) {
     upEvt.preventDefault();
@@ -211,8 +163,6 @@ mainPin.addEventListener('mousedown', function(evt) {
   document.addEventListener('mousemove', changeCoordinatesInInput);
 });
 
-// createHouses();
-
 var inputFieldsArray = document.querySelector('.notice__form').querySelectorAll('fieldset');
 
 var form = document.querySelector('.notice__form');
@@ -221,4 +171,3 @@ var form = document.querySelector('.notice__form');
     });
     evt.preventDefault();
   });
-// console.log(Object.keys(downloadedAdverts).length);

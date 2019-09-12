@@ -1,32 +1,13 @@
 'use strict';
-// function postResult() {
-// var xhr = new XMLHttpRequest();
-// var URL = 'https://reqres.in/api/users';
-// xhr.open('POST', URL);
-// xhr.send(data);
-// }
-// postResult();
-// console.log(xhr.status);
 
-// (function () {
-//     var URL = 'https://js.dump.academy/keksobooking';
-//     window.upload = function (data, onLoad, onError) {
-//         var xhr = new XMLHttpRequest();
-//         xhr.responseType = 'json';
-//         xhr.addEventListener('load', function () {
-//             onLoad(xhr.response);
-//         });
-//         xhr.open('POST', URL);
-//         xhr.send(data);
-//     };
-// })();
-var downloadedAdverts;
+
 (function (onLoad, onError) {
+var downloadedAdverts;
 var URL = 'https://js.dump.academy/keksobooking/data';
 var xhr = new XMLHttpRequest();
 xhr.addEventListener('load', function () {
   downloadedAdverts = JSON.parse(xhr.responseText);
-  console.log(downloadedAdverts);
+  console.log(downloadedAdverts); // не забыть убрать
 
   var typeOfHouse = document.getElementById('housing-type');
   
@@ -34,12 +15,12 @@ xhr.addEventListener('load', function () {
     for (var y=0; y<downloadedAdverts.length; y++) {
       houses.push(downloadedAdverts[y].offer.type);
     }
-    console.log(houses);
+    console.log(houses); // не забыть убрать
     typeOfHouse.onchange = function() {
     for (var x = 0; x<downloadedAdverts.length; x++) {
         buttons[x].className = 'map__pin';
     }
-    console.log(typeOfHouse.value);
+    console.log(typeOfHouse.value); // не забыть убрать
     
     var filteredHouses = houses.filter(function(num) {
       return num === typeOfHouse.value;
@@ -52,7 +33,7 @@ xhr.addEventListener('load', function () {
         buttons[z].className = 'map__pin';
       }
     }
-    console.log(filteredHouses);
+    console.log(filteredHouses); // не забыть убрать
   }
 
 
@@ -76,8 +57,8 @@ function closeCard(n){
 return function (e) {
   var setupClose = document.querySelector('.popup__close');
   setupClose.onclick = function() {
-    var xz = document.querySelector('.map__card');
-    xz.parentNode.removeChild(xz);
+    var mapCard = document.querySelector('.map__card');
+    mapCard.parentNode.removeChild(mapCard);
     };
   };
 }
@@ -90,7 +71,8 @@ for (var n=0; n<Object.keys(downloadedAdverts).length; n++){
 
 window.backend = {
   openCard: openCard,
-  closeCard: closeCard
+  closeCard: closeCard,
+  downloadedAdverts: downloadedAdverts
 };
 
 });
