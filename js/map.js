@@ -12,7 +12,7 @@ function buttonsInsert(arr) {
 }
 
 window.map = {
-  buttonsInsert: buttonsInsert,
+  buttonsInsert: buttonsInsert
 };
 
 })();

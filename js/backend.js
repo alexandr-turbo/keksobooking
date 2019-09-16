@@ -9,27 +9,54 @@ xhr.addEventListener('load', function () {
   downloadedAdverts = JSON.parse(xhr.responseText);
   console.log(downloadedAdverts); // не забыть убрать
 
-  var typeOfHouse = document.getElementById('housing-type');
+  var houseSelection = document.getElementById('housing-type');
+  var priceSelection = document.getElementById('housing-price');
+  var roomSelection = document.getElementById('housing-rooms');
+  var guestSelection = document.getElementById('housing-guests');
+
   
-    var houses = []; 
-    for (var y=0; y<downloadedAdverts.length; y++) {
-      houses.push(downloadedAdverts[y].offer.type);
+  var houses = [];
+  var filteredHouses = [];
+  for (var y=0; y<downloadedAdverts.length; y++) {
+    houses.push(downloadedAdverts[y]);
     }
     console.log(houses); // не забыть убрать
-    typeOfHouse.onchange = function() {
-    for (var x = 0; x<downloadedAdverts.length; x++) {
-        buttons[x].className = 'map__pin';
-    }
-    console.log(typeOfHouse.value); // не забыть убрать
-    
-    var filteredHouses = houses.filter(function(num) {
-      return num === typeOfHouse.value;
-    });
+
+
+  houseSelection.onchange = function() {
+    // for (var x = 0; x<downloadedAdverts.length; x++) {
+    //   buttons[x].className = 'map__pin--1';
+    //   }
+      console.log(houseSelection.value); // не забыть убрать
+      
+    filteredHouses = houses.filter(function(num) {
+      return num === houseSelection.value;
+      });
     for (var z = 0; z<downloadedAdverts.length; z++) {
-      if (houses[z] != typeOfHouse.value) {
+      if (houses[z].offer.type != houseSelection.value) {
         buttons[z].className = 'map__pin--disabled';
       } 
-      if (typeOfHouse.value == 'any') {
+      if (houseSelection.value == 'any') {
+        buttons[z].className = 'map__pin';
+      }
+    }
+    console.log(filteredHouses); // не забыть убрать
+  }
+
+  priceSelection.onchange = function() {
+    // for (var x = 0; x<downloadedAdverts.length; x++) {
+    //   buttons[x].className = 'map__pin--1';
+    //   }
+      console.log(priceSelection.value); // не забыть убрать
+      
+    filteredHouses = houses.filter(function(num) {
+      return num === priceSelection.value;
+      });
+    for (var z = 0; z<downloadedAdverts.length; z++) {
+      if (houses[z].offer.price > 50000) {
+        buttons[z].className = 'map__pin--disabled';
+      } 
+      if (priceSelection.value == 'any') {
         buttons[z].className = 'map__pin';
       }
     }
